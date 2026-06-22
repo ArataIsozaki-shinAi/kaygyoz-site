@@ -91,11 +91,19 @@
   .mobile-nav .btn{display:flex;justify-content:center;margin-top:16px;}
 
   /* ---------- hero ---------- */
-  .hero{position:relative;border-bottom:1px solid var(--line);overflow:hidden;}
+  .hero{position:relative;border-bottom:1px solid var(--line);overflow:hidden;min-height:clamp(580px,82vh,800px);display:flex;align-items:center;}
+  .hero > .wrap{width:100%;}
+  .hero-bg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.8;}
+  .hero-tag{margin-top:38px;display:inline-flex;align-items:center;gap:13px;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;color:var(--muted2);}
+  .hero-tag::before{content:"";width:24px;height:1px;background:var(--accent);}
+  .hero-tag b{color:var(--ink);font-weight:600;}
   .hero .grid{
-    padding:clamp(56px,8vh,104px) 0 clamp(64px,9vh,112px);
-    display:grid;grid-template-columns:1.05fr 1fr;gap:64px;align-items:center;
+    position:relative;z-index:1;
+    padding-top:clamp(72px,12vh,140px);
+    padding-bottom:clamp(80px,13vh,160px);
+    display:block;
   }
+  .hero-copy{max-width:660px;}
   .hero h1{
     font-weight:900;font-size:clamp(44px,5.6vw,76px);line-height:1.14;letter-spacing:.01em;margin:26px 0 0;
     word-break:keep-all;overflow-wrap:break-word;
@@ -256,6 +264,9 @@
   @keyframes heroSlide{from{opacity:0;transform:translateX(28px);}to{opacity:1;transform:translateX(0);}}
   .au{animation:heroUp .8s both ease-out;}
   .au.d1{animation-delay:.08s;}.au.d2{animation-delay:.18s;}.au.d3{animation-delay:.28s;}
+  /* JSが点の集合を制御するとき：集合完了まで見出しを伏せ、集まった瞬間に出す */
+  .hero.prehold .au{opacity:0;animation:none;}
+  .hero.prehold.gathered .au{animation:heroUp .7s both ease-out;}
   .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease-out,transform .7s ease-out;}
   .reveal.in{opacity:1;transform:translateY(0);}
 
@@ -296,7 +307,7 @@
     -webkit-mask:linear-gradient(90deg, transparent 42%, #000 100%);
     mask:linear-gradient(90deg, transparent 42%, #000 100%);
   }
-  .phero .inner{padding:clamp(52px,8vh,96px) 0 clamp(48px,7vh,80px);position:relative;z-index:1;}
+  .phero .inner{padding-top:clamp(52px,8vh,96px);padding-bottom:clamp(48px,7vh,80px);position:relative;z-index:1;}
   .breadcrumb{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:12.5px;color:var(--muted2);font-family:'Space Grotesk',sans-serif;margin-bottom:24px;}
   .breadcrumb a{text-decoration:none;color:var(--muted2);transition:color .2s;}
   .breadcrumb a:hover{color:var(--accent);}
@@ -331,15 +342,16 @@
   @media(max-width:920px){.vgrid{grid-template-columns:1fr;}}
 
   /* ---------- contact form ---------- */
-  .formwrap{display:grid;grid-template-columns:1.3fr .9fr;gap:clamp(40px,5vw,72px);align-items:start;}
-  .form{display:flex;flex-direction:column;gap:24px;}
-  .field{display:flex;flex-direction:column;gap:10px;}
+  .formwrap{display:grid;grid-template-columns:1.3fr .9fr;gap:clamp(40px,5vw,72px);align-items:start;min-width:0;}
+  .formwrap>*{min-width:0;}
+  .form{display:flex;flex-direction:column;gap:24px;min-width:0;}
+  .field{display:flex;flex-direction:column;gap:10px;min-width:0;}
   .field > label{font-size:14px;font-weight:700;}
   .field .req{color:var(--accent);font-size:11px;font-weight:700;margin-left:8px;border:1px solid var(--accent);border-radius:2px;padding:2px 6px;}
   .field .opt{color:var(--muted2);font-size:11px;margin-left:8px;}
   .field input,.field select,.field textarea{
     background:var(--card);border:1px solid var(--line);border-radius:2px;color:var(--ink);
-    font-family:inherit;font-size:15px;padding:14px 16px;width:100%;transition:border-color .2s,background .2s;
+    font-family:inherit;font-size:15px;padding:14px 16px;width:100%;min-width:0;max-width:100%;transition:border-color .2s,background .2s;
   }
   .field input::placeholder,.field textarea::placeholder{color:var(--muted3);}
   .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent);background:#16161B;}
@@ -388,3 +400,63 @@
   .prose p,.prose li{color:var(--muted);font-size:15px;line-height:2;}
   .prose ul,.prose ol{margin:0 0 0 1.4em;}
   .prose li{margin-bottom:8px;}
+
+  /* ============================================================
+     MOBILE FINE-TUNING (<= 760px)
+     ============================================================ */
+  html { overflow-x: hidden; }
+  @media (max-width: 760px) {
+    .hero { min-height: 86vh; }
+    .hero-bg { opacity: .5; }                 /* テキストの可読性優先で背景はやや控えめ */
+    .hero .grid { padding-top: clamp(48px,9vh,88px); padding-bottom: clamp(56px,10vh,96px); }
+    .hero h1 { font-size: clamp(34px,11vw,52px); }
+    .hero .lead { font-size: 15px; line-height: 1.95; margin-top: 22px; }
+    .hero .cta { gap: 12px; margin-top: 32px; }
+    .hero-tag { margin-top: 28px; font-size: 11.5px; letter-spacing: .2em; }
+
+    section.block { padding: clamp(56px,9vh,80px) 0; }
+    .shead { gap: 14px; margin-bottom: 32px; }
+    .shead h2 { font-size: clamp(24px,7vw,34px); }
+    .shead p { font-size: 14.5px; line-height: 1.9; }
+
+    .phero h1 { font-size: clamp(28px,9vw,42px); }
+    .phero p.lead { font-size: 14.5px; line-height: 1.9; margin-top: 16px; }
+
+    /* featured (カイギョーズ) */
+    .feature .fbody { padding: 28px 22px; }
+    .feature h3 { font-size: clamp(24px,7.5vw,34px); }
+    .feature .desc { font-size: 14.5px; }
+    .badge { white-space: normal; line-height: 1.5; font-size: 11px; letter-spacing: .08em; }
+    .pulist li { font-size: 14px; }
+    .pucta .btn { width: 100%; min-width: 0 !important; }
+
+    /* business / cards */
+    .bcard .body { padding: 26px 22px; }
+    .feature .ph, .scard .ph, .ccard .ph, .ph { min-height: 200px; }
+
+    /* trust stats */
+    .stat { padding: 28px 20px; }
+    .stat .val { font-size: clamp(36px,12vw,52px); }
+
+    /* services alternating sections: keep image below text, no rtl gap */
+    .msg { gap: 28px; }
+    .msg[style*="rtl"] { direction: ltr !important; }
+
+    /* contact */
+    .cccard { padding: 26px 22px; }
+    .contact .big { padding: 28px 22px; }
+    .contact .big .btn { width: 100%; }
+
+    /* footer */
+    .fbottom { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .nrow { padding: 18px 2px; }
+    .nrow .ntxt { font-size: 14px; }
+
+    /* logo a touch smaller so header breathes */
+    .logo img { height: 46px; }
+  }
+  @media (max-width: 420px) {
+    .hero h1 { font-size: clamp(30px,10.5vw,44px); }
+    .feature .pucta { flex-direction: column; }
+    .hero .cta .btn { width: 100%; min-width: 0; justify-content: space-between; }
+  }
